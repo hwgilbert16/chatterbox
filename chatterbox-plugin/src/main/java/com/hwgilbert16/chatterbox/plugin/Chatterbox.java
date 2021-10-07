@@ -11,16 +11,16 @@ public class Chatterbox extends JavaPlugin {
     public void onEnable() {
         plugin = this;
 
-        // Configuration setup
+        // Config file setup
         FileConfiguration config = this.getConfig();
 
-        config.addDefault("discord-bot-IP", "blank");
-        config.addDefault("discord-bot-token", "blank");
+        config.addDefault("webhook-url", "blank");
         config.options().copyDefaults(true);
         saveConfig();
 
-        if (config.getString("discord-bot-IP").equals("blank") || config.getString("discord-bot-token").equals("blank")) {
-            getLogger().severe("You need to configure your IP and token in config.yml for Chatterbox to work - disabling");
+        // Check to make sure user setup the config file
+        if (config.getString("webhook-url").equals("blank")) {
+            getLogger().severe("You need to configure your webhook URL in config.yml for Chatterbox to work - disabling");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }

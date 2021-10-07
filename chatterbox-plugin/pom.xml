@@ -13,6 +13,14 @@
         <maven.compiler.target>16</maven.compiler.target>
     </properties>
 
+    <repositories>
+        <repository>
+            <name>jcenter</name>
+            <id>bintray-jcenter</id>
+            <url>https://jcenter.bintray.com</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -21,9 +29,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>io.socket</groupId>
-            <artifactId>socket.io-client</artifactId>
-            <version>2.0.1</version>
+            <groupId>club.minnced</groupId>
+            <artifactId>discord-webhooks</artifactId>
+            <version>0.7.2</version>
         </dependency>
     </dependencies>
 
