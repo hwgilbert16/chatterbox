@@ -1,14 +1,13 @@
 package com.hwgilbert16.chatterbox.plugin.listeners;
 
+import club.minnced.discord.webhook.WebhookClient;
+import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 import com.hwgilbert16.chatterbox.plugin.Chatterbox;
 import com.hwgilbert16.chatterbox.plugin.messages.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import com.hwgilbert16.chatterbox.plugin.DiscordWebhook;
-
-import java.io.IOException;
 
 public class AsyncPlayerChatEventListener implements Listener {
     @EventHandler
@@ -16,18 +15,16 @@ public class AsyncPlayerChatEventListener implements Listener {
         Chatterbox plugin = Chatterbox.get();
 
         PlayerMessage message = new PlayerMessage(e);
-        DiscordWebhook webhook = new DiscordWebhook(plugin.getConfig().getString("webhook-url"));
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            webhook.setContent(message.playerMessage);
-            webhook.setUsername(message.messageSender);
-            webhook.setAvatarUrl(message.playerAvatarUrl);
+            WebhookClient client = WebhookClient.withUrl(plugin.getConfig().getString("webhook-url"));
 
-            try {
-                webhook.execute();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
+            WebhookMessageBuilder builder = new WebhookMessageBuilder();
+            builder.setUsername(message.messageSender);
+            builder.setAvatarUrl(message.playerAvatarUrl);
+            builder.setContent(message.playerMessage);
+
+            client.send(builder.build());
         });
     }
 }

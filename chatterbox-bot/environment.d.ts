@@ -1,7 +1,8 @@
 declare global {
     namespace NodeJS {
         interface ProcessEnv {
-            TOKEN: string
+            TOKEN: string,
+            CHANNEL_ID: string
         }
     }
 }
