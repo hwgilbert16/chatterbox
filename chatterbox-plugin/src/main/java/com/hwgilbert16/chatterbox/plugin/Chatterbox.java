@@ -25,6 +25,8 @@ public class Chatterbox extends JavaPlugin {
             return;
         }
 
+        getLogger().info(getConfig().getString("webhook-url"));
+
         // Event initialization
         getServer().getPluginManager().registerEvents(new AsyncPlayerChatEventListener(), this);
     }
