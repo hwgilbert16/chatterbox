@@ -45,12 +45,12 @@ public class Chatterbox extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AsyncPlayerChatEventListener(), this);
 
         // Socket.IO initialization
-        IO.Options options = IO.Options.builder().build();
-        try {
-            socket = IO.socket(config.getString("discord-bot-hostname"), options);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+//        IO.Options options = IO.Options.builder().setPort(3000).setHost("192.168.1.249").build();
+//        try {
+//            socket = IO.socket(config.getString("discord-bot-hostname"), options);
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
