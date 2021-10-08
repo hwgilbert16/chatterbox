@@ -10,6 +10,15 @@ const eventFiles = fs.readdirSync("./events").filter(file => file.endsWith('.js'
 const io: Server = new Server(3000, {});
 
 io.on("connection", (socket) => {
+    console.log(socket.handshake.auth);
+    console.log(socket.handshake.auth['auth-token']);
+    console.log(process.env.AUTH_TOKEN);
+    if (socket.handshake.auth['auth-token'] !== process.env.AUTH_TOKEN) {
+        console.log("Invalid auth token, disconnecting");
+        socket.disconnect();
+        return;
+    }
+
     console.log("Client connected");
 });
 
@@ -22,4 +31,4 @@ for (const file of eventFiles) {
     }
 }
 
-client.login(process.env.TOKEN);
+client.login(process.env.DISCORD_TOKEN);
