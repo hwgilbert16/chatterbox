@@ -4,6 +4,9 @@
     "strict": true,
     "strictNullChecks": true,
     "noImplicitThis": true,
-    "alwaysStrict": true
+    "alwaysStrict": true,
+    "lib":[
+      "ESNext.String"
+    ]
   }
 }
