@@ -8,6 +8,7 @@ module.exports = {
 
             // Count number of mentions in the message
             const expression = /<@.[0-9]+>/g;
+
             let match: RegExpExecArray | null;
 
             while ((match = expression.exec(message.content)) != null) {
