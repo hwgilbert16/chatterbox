@@ -3,7 +3,8 @@ declare global {
         interface ProcessEnv {
             DISCORD_TOKEN: string,
             AUTH_TOKEN: string,
-            CHANNEL_ID: string
+            CHANNEL_ID: string,
+            GUILD_ID: string
         }
     }
 }

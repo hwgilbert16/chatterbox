@@ -13,13 +13,15 @@ const io: Server = new Server(3000, {});
 if (!fs.existsSync(__dirname + "/.env")) {
     fs.openSync(__dirname + "/.env", "w");
 
-    fs.appendFileSync(__dirname + "/.env", "DISCORD_TOKEN=\nCHANNEL_ID=\nAUTH_TOKEN=");
+    fs.appendFileSync(__dirname + "/.env", "DISCORD_TOKEN=\nCHANNEL_ID=\nGUILD_ID=\nAUTH_TOKEN=");
 }
 
-if (!process.env.DISCORD_TOKEN || !process.env.CHANNEL_ID || !process.env.AUTH_TOKEN) {
+if (!process.env.DISCORD_TOKEN || !process.env.CHANNEL_ID || !process.env.AUTH_TOKEN || !process.env.GUILD_ID) {
     console.error(".env file is not configured! Fill in relevant values before starting bot.");
     process.exit(9);
 }
+
+// TODO: Lock server channel when connection is lost
 
 // Check to make sure auth is correct
 io.on("connection", (socket) => {
@@ -28,6 +30,30 @@ io.on("connection", (socket) => {
         socket.disconnect();
         return;
     }
+
+    socket.on("getId", async (data) => {
+        const guild: any = await client.guilds.cache.get(process.env.GUILD_ID);
+
+        const guildMember = await guild.members.fetch({
+            query: data,
+            limit: 1
+        });
+
+        // First key of guild members return the ID
+        const userID: number = guildMember.firstKey();
+
+        if (!userID) {
+            socket.emit("returnId", JSON.stringify({username: data, id: null}));
+        } else {
+            // Preventative against weirdness of spaced usernames
+            // Sets ID to null if the username from Discord does not match supplied username from the server
+            if (guildMember.get(guildMember.firstKey()).user.username !== data) {
+                socket.emit("returnId", JSON.stringify({username: data, id: null}));
+                return;
+            }
+            socket.emit("returnId", JSON.stringify({username: data, id: userID}));
+        }
+    });
 
     console.log("Client connected");
 });
