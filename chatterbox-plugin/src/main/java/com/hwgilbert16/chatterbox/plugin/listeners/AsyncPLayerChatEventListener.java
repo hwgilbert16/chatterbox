@@ -57,7 +57,12 @@ public class AsyncPlayerChatEventListener implements Listener {
 
                     if (users.size() == mentions) {
                         for (JSONObject mentionedUser : users) {
-                            message.playerMessage = message.playerMessage.replaceAll(mentionedUser.getString("username"), String.format("<@%s>", mentionedUser.getString("id"))).substring(1);
+                            if (mentionedUser.isNull("id")) {
+                                plugin.getLogger().info("Skipped");
+                                continue;
+                            }
+
+                            message.playerMessage = message.playerMessage.replaceAll("@" + mentionedUser.getString("username"), String.format("<@%s>", mentionedUser.getString("id")));
                         }
                         builder.setContent(message.playerMessage);
                         client.send(builder.build());

@@ -1,8 +1,10 @@
-import {Client, Intents} from "discord.js";
+import {Channel, Client, Intents, Role} from "discord.js";
 import * as dotenv from "dotenv";
 dotenv.config({path: __dirname+'/.env'});
 import {Server} from "socket.io";
 import * as fs from "fs";
+import {MessageEmbed} from "discord.js";
+import {isMessageComponentDMInteraction} from "discord-api-types/utils/v8";
 
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]});
 const eventFiles = fs.readdirSync("./events").filter(file => file.endsWith('.js'));
@@ -16,15 +18,13 @@ if (!fs.existsSync(__dirname + "/.env")) {
     fs.appendFileSync(__dirname + "/.env", "DISCORD_TOKEN=\nCHANNEL_ID=\nGUILD_ID=\nAUTH_TOKEN=");
 }
 
-if (!process.env.DISCORD_TOKEN || !process.env.CHANNEL_ID || !process.env.AUTH_TOKEN || !process.env.GUILD_ID) {
+if (!process.env.DISCORD_TOKEN || !process.env.CHANNEL_ID || !process.env.AUTH_TOKEN || !process.env.GUILD_ID || !process.env.LOCK_ROLE_ID) {
     console.error(".env file is not configured! Fill in relevant values before starting bot.");
     process.exit(9);
 }
 
-// TODO: Lock server channel when connection is lost
-
 // Check to make sure auth is correct
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
     if (socket.handshake.auth['auth-token'] !== process.env.AUTH_TOKEN) {
         console.log("Invalid auth token, disconnecting");
         socket.disconnect();
@@ -53,6 +53,46 @@ io.on("connection", (socket) => {
             }
             socket.emit("returnId", JSON.stringify({username: data, id: userID}));
         }
+    });
+
+    socket.on("disconnect", async () => {
+        const guild: any = await client.guilds.cache.get(process.env.GUILD_ID);
+
+        // @ts-ignore
+        // get the role that will be prevented from sending messages when the server is not connected
+        const role = guild.roles.cache.find(r => r.id === guild.roles.everyone.id);
+
+        // get the channel that messages are sent in
+        const channel: any = client.channels.cache.get(process.env.CHANNEL_ID);
+
+        const offlineEmbed = new MessageEmbed()
+            .setColor("#ff0000")
+            .setDescription("The server is now offline");
+
+        channel.send({embeds: [offlineEmbed]});
+
+        // prevent specified role from sending messages when the server disconnects
+        channel.permissionOverwrites.create(role, {
+            SEND_MESSAGES: false
+        });
+
+        console.log("Client disconnected");
+    });
+
+    const guild: any = await client.guilds.cache.get(process.env.GUILD_ID);
+
+    // @ts-ignore
+    const role = guild.roles.cache.find(r => r.id === guild.roles.everyone.id);
+    const channel: any = client.channels.cache.get(process.env.CHANNEL_ID);
+
+    const onlineEmbed = new MessageEmbed()
+        .setColor("#00BF00")
+        .setDescription("The server is now back online")
+
+    channel.send({embeds: [onlineEmbed]});
+
+    channel.permissionOverwrites.create(role, {
+        SEND_MESSAGES: true
     });
 
     console.log("Client connected");

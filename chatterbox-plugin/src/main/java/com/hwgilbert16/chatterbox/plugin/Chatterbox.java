@@ -29,11 +29,9 @@ public class Chatterbox extends JavaPlugin {
         FileConfiguration config = this.getConfig();
 
         //TODO Allow people to ping users in the Discord, setting to enable/disable it
-        // Autocorrect the @ messages to <@userid> to get it to actually ping people
         // And probably a configuration class since this is getting messy
 
         config.addDefault("webhook-url", "EMPTY");
-        config.addDefault("discord-bot-enabled", true);
         config.addDefault("discord-bot-hostname", "EMPTY");
         config.addDefault("discord-bot-auth-token", "EMPTY");
         config.options().copyDefaults(true);
@@ -57,12 +55,10 @@ public class Chatterbox extends JavaPlugin {
         }
 
         // Throw warning if discord bot is enabled and the configuration for it is empty
-        if (config.getBoolean("discord-bot-enabled")) {
-            if (config.getString("discord-bot-hostname").equals("EMPTY") || config.getString("discord-bot-auth-token").equals("EMPTY")) {
-                getLogger().severe("You need to configure your discord bot hostname and auth token in config.yml for Chatterbox two-way communication to work - disabling. If you don't want two-way communication, disable discord-bot-enabled in plugin.yml");
-                getServer().getPluginManager().disablePlugin(this);
-                return;
-            }
+        if (config.getString("discord-bot-hostname").equals("EMPTY") || config.getString("discord-bot-auth-token").equals("EMPTY")) {
+            getLogger().severe("You need to configure your discord bot hostname and auth token in config.yml for Chatterbox two-way communication to work, disabling.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
         // Socket.IO initialization
@@ -85,7 +81,6 @@ public class Chatterbox extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        plugin = null;
         try {
             if (socket != null) {
                 if (socket.isActive()) {
@@ -93,6 +88,7 @@ public class Chatterbox extends JavaPlugin {
                 }
             }
         } catch (IllegalStateException ignored) {}
+        plugin = null;
     }
 
     public static Chatterbox get() {
