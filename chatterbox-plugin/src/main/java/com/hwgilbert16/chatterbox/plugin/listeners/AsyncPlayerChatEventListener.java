@@ -24,8 +24,6 @@ public class AsyncPlayerChatEventListener implements Listener {
         PlayerMessage message = new PlayerMessage(e);
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            //TODO: emit to bot to retrieve user id for @username
-            // bot emits back user id
             WebhookClient client = WebhookClient.withUrl(plugin.getConfig().getString("webhook-url"));
 
             WebhookMessageBuilder builder = new WebhookMessageBuilder();

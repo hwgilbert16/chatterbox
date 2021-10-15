@@ -87,7 +87,7 @@ io.on("connection", async (socket) => {
 
     const onlineEmbed = new MessageEmbed()
         .setColor("#00BF00")
-        .setDescription("The server is now back online")
+        .setDescription("The server is now online")
 
     channel.send({embeds: [onlineEmbed]});
 
