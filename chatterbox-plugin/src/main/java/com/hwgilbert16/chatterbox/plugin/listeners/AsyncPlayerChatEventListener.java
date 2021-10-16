@@ -4,7 +4,6 @@ import club.minnced.discord.webhook.WebhookClient;
 import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 import com.hwgilbert16.chatterbox.plugin.Chatterbox;
 import com.hwgilbert16.chatterbox.plugin.messages.*;
-import io.socket.emitter.Emitter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,6 +37,7 @@ public class AsyncPlayerChatEventListener implements Listener {
             long mentions = secondM.results().count();
             plugin.getLogger().info(String.valueOf(mentions));
 
+            // TODO: also run this if the user has disabled mentioning in config file
             if (mentions < 1) {
                 builder.setContent(message.playerMessage);
                 client.send(builder.build());

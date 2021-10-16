@@ -17,6 +17,6 @@ public class PlayerMessage {
         this.playerUUID = e.getPlayer().getUniqueId().toString();
 
         // Avatar URL is gathered from cravatar.eu
-        this.playerAvatarUrl = "https://cravatar.eu/helmavatar/" + e.getPlayer().getDisplayName() + "/128.png";
+        this.playerAvatarUrl = "https://cravatar.eu/helmavatar/" + plugin.uuidCache.get(e.getPlayer().getDisplayName()) + "/128.png";
     }
 }
