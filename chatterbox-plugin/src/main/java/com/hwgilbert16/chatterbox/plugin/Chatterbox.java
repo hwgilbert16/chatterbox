@@ -3,7 +3,6 @@ package com.hwgilbert16.chatterbox.plugin;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.ChatColor;
 import com.hwgilbert16.chatterbox.plugin.listeners.*;
@@ -21,24 +20,16 @@ public class Chatterbox extends JavaPlugin {
     // UUID cache for events without a getPlayer method
     public Map<String, String> uuidCache = new HashMap<>();
 
+    // Initialize configuration object
+    public ConfigurationManager config = new ConfigurationManager();
+
     @Override
     public void onEnable() {
         plugin = this;
-
-        // Config file setup
-        FileConfiguration config = this.getConfig();
-
-        //TODO Allow people to ping users in the Discord, setting to enable/disable it
-        // And probably a configuration class since this is getting messy
-
-        config.addDefault("webhook-url", "EMPTY");
-        config.addDefault("discord-bot-hostname", "EMPTY");
-        config.addDefault("discord-bot-auth-token", "EMPTY");
-        config.options().copyDefaults(true);
-        saveConfig();
+        config.initializeConfig();
 
         // Generate auth token if it is empty
-        if (config.getString("discord-bot-auth-token").equals("EMPTY")) {
+        if (this.config.getDiscordBotAuthToken().equals("EMPTY")) {
             String authToken = UUID.randomUUID().toString().replace("-", "");
             getLogger().info(authToken);
 
@@ -47,23 +38,23 @@ public class Chatterbox extends JavaPlugin {
         }
 
         // Check to make sure user setup the config file
-        if (config.getString("webhook-url").equals("EMPTY")) {
+        if (this.config.getWebhookUrl().equals("EMPTY")) {
             getLogger().severe("You need to configure your webhook URL in config.yml for Chatterbox to work - disabling");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
         // Throw warning if discord bot is enabled and the configuration for it is empty
-        if (config.getString("discord-bot-hostname").equals("EMPTY") || config.getString("discord-bot-auth-token").equals("EMPTY")) {
+        if (this.config.getDiscordBotHostname().equals("EMPTY") || this.config.getDiscordBotAuthToken().equals("EMPTY")) {
             getLogger().severe("You need to configure your discord bot hostname and auth token in config.yml for Chatterbox two-way communication to work, disabling.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
         // Socket.IO initialization
-        IO.Options options = IO.Options.builder().setAuth(Collections.singletonMap("auth-token", config.getString("discord-bot-auth-token"))).build();
+        IO.Options options = IO.Options.builder().setAuth(Collections.singletonMap("auth-token", this.config.getDiscordBotAuthToken())).build();
         try {
-            socket = IO.socket(config.getString("discord-bot-hostname"), options);
+            socket = IO.socket(this.config.getDiscordBotHostname(), options);
             socket.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -71,7 +62,9 @@ public class Chatterbox extends JavaPlugin {
 
         // Event initialization
         getServer().getPluginManager().registerEvents(new AsyncPlayerChatEventListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerDeathEventListener(), this);
+        if (config.isSendDeathMessages()) {
+            getServer().getPluginManager().registerEvents(new PlayerDeathEventListener(), this);
+        }
         getServer().getPluginManager().registerEvents(new PlayerJoinEventListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitEventListener(), this);
 
@@ -83,13 +76,6 @@ public class Chatterbox extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        try {
-            if (socket != null) {
-                if (socket.isActive()) {
-                    socket.disconnect();
-                }
-            }
-        } catch (IllegalStateException ignored) {}
         plugin = null;
     }
 

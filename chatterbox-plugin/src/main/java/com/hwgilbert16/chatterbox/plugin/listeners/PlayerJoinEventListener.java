@@ -17,18 +17,20 @@ public class PlayerJoinEventListener implements Listener {
         // Cache UUID for use in events that do not have a getPlayer method
         plugin.uuidCache.put(e.getPlayer().getDisplayName(), e.getPlayer().getUniqueId().toString());
 
-        PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(e);
+        if (plugin.config.isSendJoinMessages()) {
+            PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(e);
 
-        WebhookEmbed embed = new WebhookEmbedBuilder()
-                .setColor(0x00BF00)
-                .setThumbnailUrl(playerJoinMessage.playerAvatarUrl)
-                .setDescription(playerJoinMessage.joinMessage)
-                .build();
+            WebhookEmbed embed = new WebhookEmbedBuilder()
+                    .setColor(0x00BF00)
+                    .setThumbnailUrl(playerJoinMessage.playerAvatarUrl)
+                    .setDescription(playerJoinMessage.joinMessage)
+                    .build();
 
-        plugin.getLogger().info(playerJoinMessage.joinMessage);
+            plugin.getLogger().info(playerJoinMessage.joinMessage);
 
-        WebhookClient client = WebhookClient.withUrl(plugin.getConfig().getString("webhook-url"));
-        client.send(embed);
+            WebhookClient client = WebhookClient.withUrl(plugin.config.getWebhookUrl());
+            client.send(embed);
+        }
 
     }
 }

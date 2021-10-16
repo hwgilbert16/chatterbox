@@ -23,7 +23,7 @@ public class PlayerDeathEventListener implements Listener {
                 .setDescription(playerDeathMessage.deathMessage)
                 .build();
 
-        WebhookClient client = WebhookClient.withUrl(plugin.getConfig().getString("webhook-url"));
+        WebhookClient client = WebhookClient.withUrl(plugin.config.getWebhookUrl());
         client.send(embed);
     }
 }

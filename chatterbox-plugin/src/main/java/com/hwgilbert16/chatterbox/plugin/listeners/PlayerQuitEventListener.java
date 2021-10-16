@@ -14,16 +14,18 @@ public class PlayerQuitEventListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent e) {
         Chatterbox plugin = Chatterbox.get();
 
-        PlayerQuitMessage playerQuitMessage = new PlayerQuitMessage(e);
+        if (plugin.config.isSendQuitMessages()) {
+            PlayerQuitMessage playerQuitMessage = new PlayerQuitMessage(e);
 
-        WebhookEmbed embed = new WebhookEmbedBuilder()
-                .setColor(0xff0000)
-                .setThumbnailUrl(playerQuitMessage.playerAvatarUrl)
-                .setDescription(playerQuitMessage.quitMessage)
-                .build();
+            WebhookEmbed embed = new WebhookEmbedBuilder()
+                    .setColor(0xff0000)
+                    .setThumbnailUrl(playerQuitMessage.playerAvatarUrl)
+                    .setDescription(playerQuitMessage.quitMessage)
+                    .build();
 
-        WebhookClient client = WebhookClient.withUrl(plugin.getConfig().getString("webhook-url"));
-        client.send(embed);
+            WebhookClient client = WebhookClient.withUrl(plugin.config.getWebhookUrl());
+            client.send(embed);
+        }
 
         // Remove player from cache upon leaving
         // Needed for if user changes username between server restarts

@@ -23,7 +23,7 @@ public class AsyncPlayerChatEventListener implements Listener {
         PlayerMessage message = new PlayerMessage(e);
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            WebhookClient client = WebhookClient.withUrl(plugin.getConfig().getString("webhook-url"));
+            WebhookClient client = WebhookClient.withUrl(plugin.config.getWebhookUrl());
 
             WebhookMessageBuilder builder = new WebhookMessageBuilder();
             builder.setUsername(message.messageSender);
@@ -37,8 +37,9 @@ public class AsyncPlayerChatEventListener implements Listener {
             long mentions = secondM.results().count();
             plugin.getLogger().info(String.valueOf(mentions));
 
-            // TODO: also run this if the user has disabled mentioning in config file
-            if (mentions < 1) {
+            // This does not prevent against @everyone and @here if it is enabled
+            plugin.getLogger().info(String.valueOf(plugin.config.isEnableDiscordMentioning()));
+            if (mentions < 1 || !plugin.config.isEnableDiscordMentioning()) {
                 builder.setContent(message.playerMessage);
                 client.send(builder.build());
 
@@ -49,7 +50,7 @@ public class AsyncPlayerChatEventListener implements Listener {
 
             plugin.socket.on("returnId", user -> {
                 try {
-                    plugin.getLogger().info(user[0].toString());
+                    //plugin.getLogger().info(user[0].toString());
                     JSONObject userObject = new JSONObject(user[0].toString());
                     users.add(userObject);
 
