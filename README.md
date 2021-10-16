@@ -34,7 +34,7 @@ The **recommended way to setup the Discord bot is by using our Docker container 
 
 ### Docker Container
 
-Before starting installation, be sure that Docker is installed on the system that you will be running the Discord bot in. Downloads for Docker can be found below if you do not already havee it installed.
+Before starting installation, be sure that Docker is installed on the system that you will be running the Discord bot in. Downloads for Docker can be found below if you do not already have it installed.
 
 - [Linux](https://docs.docker.com/linux/started/)
 - [Windows](https://docs.docker.com/windows/started)
