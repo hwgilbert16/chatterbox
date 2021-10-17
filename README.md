@@ -169,7 +169,7 @@ There should also be Node.JS **>=16** on the Discord bot server. You can find mo
 Download the latest release of Chatterbox and unzip it. Replace (version number) with what the current version of Chatterbox is. You can find this out in the "releases" section.
 
 ```
-wget https://github.com/Aurinsk/spigot-agent/archive/refs/tags/v(version number).tar.gz && tar -xf (version number).tar.gz && mv chatterbox-(version-number)/chatterbox-bot .. && rm -rf chatterbox-(version-number) && ls chatterbox-bot
+wget https://github.com/hwgilbert16/chatterbox/archive/refs/tags/v(version number).tar.gz && tar -xf v(version number).tar.gz && cp -r chatterbox-(version number)/chatterbox-bot . && rm -rf chatterbox-(version number) && rm v(version number).tar.gz && cd chatterbox-bot
 ```
 
 Next, install the dependencies of Chatterbox.
@@ -180,7 +180,9 @@ npm install && npm build
 
 Run the following command to generate the .env file. This will be the environment file, where your individual details will be input for the bot to use.
 
-```npm start```
+```
+npm start
+```
 
 Open the file named `.env` with your text editor of choice
 
