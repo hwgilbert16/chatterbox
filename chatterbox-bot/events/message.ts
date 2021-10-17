@@ -1,8 +1,8 @@
 module.exports = {
-    name: 'messageCreate',
+    name: "messageCreate",
     once: false,
     // @ts-ignore
-    execute(message, io) {
+    execute (message, io) {
         if (message.channelId === process.env.CHANNEL_ID && !message.author.bot) {
             let finalMessage: string = message.content;
 
@@ -29,4 +29,4 @@ module.exports = {
             io.emit("message", `<${message.member.displayName}> ${finalMessage}`);
         }
     }
-}
+};

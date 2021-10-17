@@ -1,20 +1,21 @@
-import {Channel, Client, Intents, Role} from "discord.js";
+import { Client, Intents, MessageEmbed } from "discord.js";
 import * as dotenv from "dotenv";
-dotenv.config({path: __dirname+'/.env'});
-import {Server} from "socket.io";
+import { Server } from "socket.io";
 import * as fs from "fs";
-import {MessageEmbed} from "discord.js";
+import * as path from "path";
 
-const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]});
-const eventFiles = fs.readdirSync("./events").filter(file => file.endsWith('.js'));
+dotenv.config({ path: path.join(__dirname, "/.env") });
+
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const eventFiles = fs.readdirSync("./events").filter(file => file.endsWith(".js"));
 
 const io: Server = new Server(3000, {});
 
 // Create .env if it doesn't exist
-if (!fs.existsSync(__dirname + "/.env")) {
-    fs.openSync(__dirname + "/.env", "w");
+if (!fs.existsSync(path.join(__dirname, "/.env"))) {
+    fs.openSync(path.join(__dirname, "/.env"), "w");
 
-    fs.appendFileSync(__dirname + "/.env", "DISCORD_TOKEN=\nCHANNEL_ID=\nGUILD_ID=\nAUTH_TOKEN=\nLOCK_ROLE_ID\nLOCK_CHANNEL_WHEN_OFFLINE");
+    fs.appendFileSync(path.join(__dirname, "/.env"), "DISCORD_TOKEN=\nCHANNEL_ID=\nGUILD_ID=\nAUTH_TOKEN=\nLOCK_ROLE_ID\nLOCK_CHANNEL_WHEN_OFFLINE");
 }
 
 if (!process.env.DISCORD_TOKEN || !process.env.CHANNEL_ID || !process.env.AUTH_TOKEN || !process.env.GUILD_ID || !process.env.LOCK_ROLE_ID || !process.env.LOCK_CHANNEL_WHEN_OFFLINE) {
@@ -24,7 +25,7 @@ if (!process.env.DISCORD_TOKEN || !process.env.CHANNEL_ID || !process.env.AUTH_T
 
 // Check to make sure auth is correct
 io.on("connection", async (socket) => {
-    if (socket.handshake.auth['auth-token'] !== process.env.AUTH_TOKEN) {
+    if (socket.handshake.auth["auth-token"] !== process.env.AUTH_TOKEN) {
         console.log("Invalid auth token, disconnecting");
         socket.disconnect();
         return;
@@ -42,15 +43,15 @@ io.on("connection", async (socket) => {
         const userID: number = guildMember.firstKey();
 
         if (!userID) {
-            socket.emit("returnId", JSON.stringify({username: data, id: null}));
+            socket.emit("returnId", JSON.stringify({ username: data, id: null }));
         } else {
             // Preventative against weirdness of spaced usernames
             // Sets ID to null if the username from Discord does not match supplied username from the server
             if (guildMember.get(guildMember.firstKey()).user.username !== data) {
-                socket.emit("returnId", JSON.stringify({username: data, id: null}));
+                socket.emit("returnId", JSON.stringify({ username: data, id: null }));
                 return;
             }
-            socket.emit("returnId", JSON.stringify({username: data, id: userID}));
+            socket.emit("returnId", JSON.stringify({ username: data, id: userID }));
         }
     });
 
@@ -68,9 +69,9 @@ io.on("connection", async (socket) => {
             .setColor("#ff0000")
             .setDescription("The server is now offline");
 
-        channel.send({embeds: [offlineEmbed]});
+        channel.send({ embeds: [offlineEmbed] });
 
-        if (process.env.LOCK_CHANNEL_WHEN_OFFLINE == "true") {
+        if (process.env.LOCK_CHANNEL_WHEN_OFFLINE === "true") {
             // prevent specified role from sending messages when the server disconnects
             channel.permissionOverwrites.create(role, {
                 SEND_MESSAGES: false
@@ -88,9 +89,9 @@ io.on("connection", async (socket) => {
 
     const onlineEmbed = new MessageEmbed()
         .setColor("#00BF00")
-        .setDescription("The server is now online")
+        .setDescription("The server is now online");
 
-    channel.send({embeds: [onlineEmbed]});
+    channel.send({ embeds: [onlineEmbed] });
 
     channel.permissionOverwrites.create(role, {
         SEND_MESSAGES: true

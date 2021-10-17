@@ -1,8 +1,8 @@
 module.exports = {
-    name: 'ready',
+    name: "ready",
     once: true,
     // @ts-ignore
-    execute(client) {
+    execute (client) {
         console.log(`Chatterbox Bot is ready, logged in as "${client.user.tag}"`);
     }
-}
+};
