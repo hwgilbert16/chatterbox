@@ -1,7 +1,11 @@
 # Chatterbox
 
-[![CodeFactor](https://www.codefactor.io/repository/github/hwgilbert16/chatterbox/badge/main)](https://www.codefactor.io/repository/github/hwgilbert16/chatterbox/overview/main)
 ![GitHub](https://img.shields.io/github/license/hwgilbert16/chatterbox)
+![Docker Pulls](https://img.shields.io/docker/pulls/hwgilbert16/chatterbox)
+![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/hwgilbert16/chatterbox/main/chatterbox-bot)
+![GitHub issues](https://img.shields.io/github/issues-raw/hwgilbert16/chatterbox)
+![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/hwgilbert16/chatterbox)
+[![CodeFactor](https://www.codefactor.io/repository/github/hwgilbert16/chatterbox/badge/main)](https://www.codefactor.io/repository/github/hwgilbert16/chatterbox/overview/main)
 
 Chatterbox is a convient and dead-simple way to unify a Discord channel and a Minecraft chat, allowing players to seamlessly communicate regardless of their presence in the server.
 
@@ -152,13 +156,15 @@ Installation is finished.
 
 If you have followed the Docker container bot instructions, you do not need to follow the following instructions.
 
-You should first create a Discord bot in the Discord Developer Portal. If you do not know how to, you can follow the guide at the top of this DiscordJS article [here](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot).
+Create a Discord bot in the Discord Developer Portal before anything else. If you do not know how to, you can follow the guide at the top of this DiscordJS article [here](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot).
 
 Add the bot to your Discord server with the following URL, replacing (client_ID) with the client ID of your bot. Open this URL in your web browser and add your bot to your Discord server.
 
 ```
 https://discord.com/oauth2/authorize?client_id=(client_ID)&permissions=8&scope=bot
 ```
+
+There should also be Node.JS **>=16** on the Discord bot server. You can find more information on how to install it [here](https://nodejs.org/en/download/current/).
 
 Download the latest release of Chatterbox and unzip it. Replace (version number) with what the current version of Chatterbox is. You can find this out in the "releases" section.
 
