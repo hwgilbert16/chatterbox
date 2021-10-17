@@ -9,7 +9,7 @@ public class ConfigurationManager {
     private boolean sendJoinMessages;
     private boolean sendQuitMessages;
     private boolean sendDeathMessages;
-    private boolean enableDiscordMentioning;
+    private boolean sendDiscordMentions;
 
     public void initializeConfig() {
         Chatterbox plugin = Chatterbox.get();
@@ -21,7 +21,7 @@ public class ConfigurationManager {
         config.addDefault("send-join-messages", true);
         config.addDefault("send-quit-messages", true);
         config.addDefault("send-death-messages", true);
-        config.addDefault("enable-discord-mentioning", true);
+        config.addDefault("send-discord-mentions", true);
         config.options().copyDefaults(true);
         plugin.saveConfig();
 
@@ -31,7 +31,7 @@ public class ConfigurationManager {
         this.sendJoinMessages = config.getBoolean("send-join-messages");
         this.sendQuitMessages = config.getBoolean("send-quit-messages");
         this.sendDeathMessages = config.getBoolean("send-death-messages");
-        this.enableDiscordMentioning = config.getBoolean("enable-discord-mentioning");
+        this.sendDiscordMentions = config.getBoolean("send-discord-mentions");
     }
 
     public String getWebhookUrl() {
@@ -58,7 +58,7 @@ public class ConfigurationManager {
         return sendDeathMessages;
     }
 
-    public boolean isEnableDiscordMentioning() {
-        return enableDiscordMentioning;
+    public boolean isSendDiscordMentions() {
+        return sendDiscordMentions;
     }
 }

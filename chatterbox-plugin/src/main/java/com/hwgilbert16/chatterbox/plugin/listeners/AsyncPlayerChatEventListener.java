@@ -38,8 +38,8 @@ public class AsyncPlayerChatEventListener implements Listener {
             plugin.getLogger().info(String.valueOf(mentions));
 
             // This does not prevent against @everyone and @here if it is enabled
-            plugin.getLogger().info(String.valueOf(plugin.config.isEnableDiscordMentioning()));
-            if (mentions < 1 || !plugin.config.isEnableDiscordMentioning()) {
+            plugin.getLogger().info(String.valueOf(plugin.config.isSendDiscordMentions()));
+            if (mentions < 1 || !plugin.config.isSendDiscordMentions()) {
                 builder.setContent(message.playerMessage);
                 client.send(builder.build());
 

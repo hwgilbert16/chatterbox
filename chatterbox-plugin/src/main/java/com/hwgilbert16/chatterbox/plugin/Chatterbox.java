@@ -3,10 +3,16 @@ package com.hwgilbert16.chatterbox.plugin;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.ChatColor;
 import com.hwgilbert16.chatterbox.plugin.listeners.*;
+import org.bukkit.plugin.java.JavaPluginLoader;
+import org.bukkit.event.HandlerList;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import java.util.*;
 
@@ -23,15 +29,33 @@ public class Chatterbox extends JavaPlugin {
     // Initialize configuration object
     public ConfigurationManager config = new ConfigurationManager();
 
+    // For testing
+    public HandlerList handlerList = new HandlerList();
+
+    public Chatterbox() {
+        super();
+    }
+
+    protected Chatterbox(JavaPluginLoader loader, PluginDescriptionFile descriptionFile, File dataFolder, File file) {
+        super(loader, descriptionFile, dataFolder, file);
+    }
+
     @Override
     public void onEnable() {
         plugin = this;
         config.initializeConfig();
 
+        // Event initialization
+        getServer().getPluginManager().registerEvents(new AsyncPlayerChatEventListener(), this);
+        if (config.isSendDeathMessages()) {
+            getServer().getPluginManager().registerEvents(new PlayerDeathEventListener(), this);
+        }
+        getServer().getPluginManager().registerEvents(new PlayerJoinEventListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitEventListener(), this);
+
         // Generate auth token if it is empty
         if (this.config.getDiscordBotAuthToken().equals("EMPTY")) {
             String authToken = UUID.randomUUID().toString().replace("-", "");
-            getLogger().info(authToken);
 
             getConfig().set("discord-bot-auth-token", authToken);
             saveConfig();
@@ -59,14 +83,6 @@ public class Chatterbox extends JavaPlugin {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-
-        // Event initialization
-        getServer().getPluginManager().registerEvents(new AsyncPlayerChatEventListener(), this);
-        if (config.isSendDeathMessages()) {
-            getServer().getPluginManager().registerEvents(new PlayerDeathEventListener(), this);
-        }
-        getServer().getPluginManager().registerEvents(new PlayerJoinEventListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitEventListener(), this);
 
         socket.on("message", args -> {
             String message = Arrays.toString(args).replace("[", "").replace("]", "");

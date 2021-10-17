@@ -6,6 +6,7 @@ declare global {
             CHANNEL_ID: string,
             GUILD_ID: string,
             LOCK_ROLE_ID: string
+            LOCK_CHANNEL_WHEN_OFFLINE: string
         }
     }
 }

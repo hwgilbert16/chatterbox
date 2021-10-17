@@ -4,7 +4,6 @@ dotenv.config({path: __dirname+'/.env'});
 import {Server} from "socket.io";
 import * as fs from "fs";
 import {MessageEmbed} from "discord.js";
-import {isMessageComponentDMInteraction} from "discord-api-types/utils/v8";
 
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]});
 const eventFiles = fs.readdirSync("./events").filter(file => file.endsWith('.js'));
@@ -15,10 +14,10 @@ const io: Server = new Server(3000, {});
 if (!fs.existsSync(__dirname + "/.env")) {
     fs.openSync(__dirname + "/.env", "w");
 
-    fs.appendFileSync(__dirname + "/.env", "DISCORD_TOKEN=\nCHANNEL_ID=\nGUILD_ID=\nAUTH_TOKEN=");
+    fs.appendFileSync(__dirname + "/.env", "DISCORD_TOKEN=\nCHANNEL_ID=\nGUILD_ID=\nAUTH_TOKEN=\nLOCK_ROLE_ID\nLOCK_CHANNEL_WHEN_OFFLINE");
 }
 
-if (!process.env.DISCORD_TOKEN || !process.env.CHANNEL_ID || !process.env.AUTH_TOKEN || !process.env.GUILD_ID || !process.env.LOCK_ROLE_ID) {
+if (!process.env.DISCORD_TOKEN || !process.env.CHANNEL_ID || !process.env.AUTH_TOKEN || !process.env.GUILD_ID || !process.env.LOCK_ROLE_ID || !process.env.LOCK_CHANNEL_WHEN_OFFLINE) {
     console.error(".env file is not configured! Fill in relevant values before starting bot.");
     process.exit(9);
 }
@@ -71,10 +70,12 @@ io.on("connection", async (socket) => {
 
         channel.send({embeds: [offlineEmbed]});
 
-        // prevent specified role from sending messages when the server disconnects
-        channel.permissionOverwrites.create(role, {
-            SEND_MESSAGES: false
-        });
+        if (process.env.LOCK_CHANNEL_WHEN_OFFLINE == "true") {
+            // prevent specified role from sending messages when the server disconnects
+            channel.permissionOverwrites.create(role, {
+                SEND_MESSAGES: false
+            });
+        }
 
         console.log("Client disconnected");
     });
