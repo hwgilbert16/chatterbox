@@ -210,11 +210,7 @@ If you would like to compile the bot yourself, simply run `tsc` in the bot's dir
 
 These instructions are for a Linux based system as it is what Chatterbox was developed on.
 
-Make sure you've installed Apache Maven and ran BuildTools for 1.17.1 to add the repository to Maven. The install will fail if you have not compiled the server jar on your system.
-
-Information for installing Maven and running BuildTools can be found below:
-- [Maven](https://maven.apache.org/install.html)
-- [BuildTools](https://www.spigotmc.org/wiki/buildtools/#1-17-1)
+Make sure you've installed Apache Maven. If you haven't installed Maven before, you can find instructions [here](https://maven.apache.org/install.html).
 
 Pull the latest files from GitHub and extrapolate the plugin directory. You can `git pull` the latest release, or download the source code from the latest release and extract it. The instructions below aree for using `git pull`.
 
