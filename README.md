@@ -152,6 +152,14 @@ Installation is finished.
 
 If you have followed the Docker container bot instructions, you do not need to follow the following instructions.
 
+You should first create a Discord bot in the Discord Developer Portal. If you do not know how to, you can follow the guide at the top of this DiscordJS article [here](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot).
+
+Add the bot to your Discord server with the following URL, replacing (client_ID) with the client ID of your bot. Open this URL in your web browser and add your bot to your Discord server.
+
+```
+https://discord.com/oauth2/authorize?client_id=(client_ID)&permissions=8&scope=bot
+```
+
 Download the latest release of Chatterbox and unzip it. Replace (version number) with what the current version of Chatterbox is. You can find this out in the "releases" section.
 
 ```
